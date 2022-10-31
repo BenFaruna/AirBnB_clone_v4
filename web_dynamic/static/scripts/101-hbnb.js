@@ -1,15 +1,44 @@
 $(document).ready(() => {
   const amenities = [];
-  const amenitiesId = []
+  const amenitiesId = [];
+  const states = [];
+  const statesId = [];
+  const cities = [];
+  const citiesId = [];
   $('.amenities INPUT').change(function () {
     if (this.checked) {
       amenities.push($(this).attr('data-name'));
       amenitiesId.push($(this).attr('data-id'));
     } else {
-      amenities.pop($(this).attr('data-name'));
-      amenitiesId.pop($(this).attr('data-id'));
+      let index = amenities.indexOf($(this).attr('data-name'));
+      amenities.splice(index, 1);
+      amenitiesId.splice(index, 1);
     }
     $('.amenities H4').html(Object.values(amenities).join(', '));
+  });
+
+  $('body > div > section.filters > div.locations > div > ul > li > h2 > li > input[type=checkbox]').change(function () {
+    if (this.checked) {
+      states.push($(this).attr('data-name'));
+      statesId.push($(this).attr('data-id'));
+    } else {
+      let index = states.indexOf($(this).attr('data-name'));
+      states.splice(index, 1);
+      statesId.splice(index, 1);
+    }
+    $('.locations h4').html(Object.values(states).join(', '));
+  });
+
+  $('div.locations > div > ul li input').change(function () {
+    if (this.checked) {
+      cities.push($(this).attr('data-name'));
+      citiesId.push($(this).attr('data-id'));
+    } else {
+      let index = cities.indexOf($(this).attr('data-name'));
+      cities.splice(index, 1);
+      citiesId.splice(index, 1);
+    }
+    $('.locations h4').html(Object.values(cities).join(', '));
   });
 
   $.get('http://0.0.0.0:5001/api/v1/status', function(data) {
@@ -24,7 +53,7 @@ $(document).ready(() => {
     $.ajax({
       url: 'http://0.0.0.0:5001/api/v1/places_search/',
       type: "POST",
-      data: JSON.stringify({amenities: amenitiesId}),
+      data: JSON.stringify({amenities: amenitiesId, states: statesId, cities: citiesId}),
       contentType: "application/json; charset=utf-8",
       dataType: 'json',
       success: function(data) {
